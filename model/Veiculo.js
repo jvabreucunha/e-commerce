@@ -30,7 +30,7 @@ const Veiculo = sequelize.define("Veiculo",
     },
     quilometragem: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
     categoria: {
       type: DataTypes.ENUM("sedan", "SUV", "hatch", "picape", "outro"),
@@ -38,7 +38,7 @@ const Veiculo = sequelize.define("Veiculo",
     },
     cor: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     combustivel: {
       type: DataTypes.ENUM("gasolina", "flex", "etanol", "diesel", "eletrico"),
@@ -50,7 +50,7 @@ const Veiculo = sequelize.define("Veiculo",
     },
     imagem_url: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     status: {
       type: DataTypes.ENUM("disponivel", "vendido"),
