@@ -4,13 +4,9 @@ const Veiculo = require('../model/Veiculo');
 
 const cadastrar = async (req, res) => {
   try {
-    const { marca, modelo, ano, preco, quilometragem, categoria, cor, combustivel, cambio, imagem_url} = req.body;
+    const { marca, modelo, ano, preco, descricao, quilometragem, categoria, cor, combustivel, cambio, imagem_url } = req.body;
 
-    if (!marca || !modelo || !ano || !preco || !categoria || !combustivel || !cambio || !quilometragem || !cor || !imagem_url) {
-      return res.status(400).json({ message: "Campos obrigatórios não foram preenchidos" });
-    }
-
-    const veiculo = await Veiculo.create(req.body);
+    const veiculo = await Veiculo.create({marca, modelo, ano, preco, descricao, quilometragem, categoria, cor, combustivel, cambio, imagem_url});
     res.status(201).json({ message: "Veículo cadastrado com sucesso!", veiculo });
   } catch (err) {
     console.error("Erro ao cadastrar veículo:", err);
@@ -101,8 +97,12 @@ const atualizar = async (req, res) => {
     
 
     if (!veiculo) return res.status(404).json({ message: "Veículo não encontrado" });
+
+    if (req.usuario.tipo !== 'admin' && req.usuario.id_usuario !== usuario.id_usuario) {
+      return res.status(403).json({ message: 'Você não tem permissão para atualizar este veículo' });
+    }
     
-    await veiculo.update(marca, modelo, ano, preco, quilometragem, categoria, cor, combustivel, cambio, imagem_url);
+    await veiculo.update({ marca, modelo, ano, preco, descricao, quilometragem, categoria, cor, combustivel, cambio, imagem_url });
     
     await redis.del(`veiculo:modelo:${veiculo.modelo.toLowerCase()}`);
 
@@ -119,6 +119,10 @@ const deletar = async (req, res) => {
     const veiculo = await Veiculo.findByPk(id);
 
     if (!veiculo) return res.status(404).json({ message: "Veículo não encontrado" });
+
+    if (req.usuario.tipo !== 'admin' && req.usuario.id_usuario !== usuario.id_usuario) {
+      return res.status(403).json({ message: 'Você não tem permissão para deletar este veículo' });
+    }
 
     await veiculo.destroy();
 

@@ -1,3 +1,4 @@
+const { Sequelize } = require("sequelize");
 const Usuario = require('../model/Usuario');
 const { hashSenha } = require('../service/bcrypt.service');
 
@@ -5,19 +6,24 @@ const cadastrar = async (req, res) => {
     try {
       const { nome, email, senha, tipo, cpf, telefone, endereco } = req.body;
   
-      if (!nome || !email || !senha || !cpf) {
-        return res.status(400).json({ message: 'Campos obrigatórios: nome, email e senha' });
-      }
-  
-      // Define cliente como padrao para evitar que clientes tentem forcar acesso admin
       let tipoFinal = 'cliente'; 
   
-      if (req.usuario.tipo === 'admin' && tipo) {
-        const tiposValidos = ['cliente', 'funcionario', 'admin'];
-        if (!tiposValidos.includes(tipo)) {
-          return res.status(400).json({ message: 'Tipo inválido' });
+      if (req.headers['authorization']) {
+        try {
+          const authHeader = req.headers['authorization'];
+          const token = authHeader.split(' ')[1];
+          const dadosToken = verificarToken(token);
+      
+          if (dadosToken && dadosToken.tipo === 'admin' && tipo) {
+            const tiposValidos = ['cliente','funcionario','admin'];
+            if (!tiposValidos.includes(tipo)) {
+              return res.status(400).json({ message: 'Tipo inválido' });
+            }
+            tipoFinal = tipo;
+          }
+        } catch (err) {
+          tipoFinal = 'cliente';
         }
-        tipoFinal = tipo;
       }
   
       const senhaHash = await hashSenha(senha);
@@ -44,7 +50,12 @@ const cadastrar = async (req, res) => {
             endereco: usuario.endereco
         }});
     } catch (err) {
-      console.error('Erro ao criar usuário:', err);
+      if (err instanceof Sequelize.UniqueConstraintError) {
+        // Pega o campo que violou a constraint
+        const campo = err.errors[0].path;
+        return res.status(400).json({ message: `${campo} já está em uso. Por favor, escolha outro.` });
+      }
+
       res.status(500).json({ message: 'Erro ao criar usuário' });
     }
 };
@@ -85,12 +96,13 @@ const atualizar = async (req, res) => {
       const usuario = await Usuario.findByPk(id);
       if (!usuario) return res.status(404).json({ message: 'Usuário não encontrado' });
   
-      if (nome) usuario.nome = nome;
-      if (email) usuario.email = email;
+      if (req.usuario.tipo !== 'admin' && req.usuario.id_usuario !== usuario.id_usuario) {
+        return res.status(403).json({ message: 'Você não tem permissão para atualizar este usuário' });
+      }
+
       if (senha) usuario.senha = await hashSenha(senha);
-      if (cpf) usuario.cpf = cpf;
-      if (telefone) usuario.telefone = telefone;
-      if (endereco) usuario.endereco = endereco;
+
+      usuario.update({nome, email, cpf, telefone, endereco})
   
       if (tipo && req.usuario.tipo === 'admin') {
         const tiposValidos = ['cliente', 'funcionario', 'admin'];
@@ -114,6 +126,10 @@ const deletar = async (req, res) => {
     const { id } = req.params;
     const usuario = await Usuario.findByPk(id);
     if (!usuario) return res.status(404).json({ message: 'Usuário não encontrado' });
+
+    if (req.usuario.tipo !== 'admin' && req.usuario.id_usuario !== usuario.id_usuario) {
+      return res.status(403).json({ message: 'Você não tem permissão para deletar este usuário' });
+    }
 
     await usuario.destroy();
     res.status(200).json({ message: 'Usuário deletado com sucesso' });
