@@ -4,9 +4,17 @@ const Veiculo = require('../model/Veiculo');
 
 const cadastrar = async (req, res) => {
   try {
+
+    if (!req.usuario || !req.usuario.id_usuario) {
+      return res.status(401).json({ message: "Autenticação necessária para cadastrar veículo." });
+    }
+
     const { marca, modelo, ano, preco, descricao, quilometragem, categoria, cor, combustivel, cambio, imagem_url } = req.body;
 
-    const veiculo = await Veiculo.create({marca, modelo, ano, preco, descricao, quilometragem, categoria, cor, combustivel, cambio, imagem_url});
+    const id_usuario = req.usuario.id_usuario;
+
+    const veiculo = await Veiculo.create({marca, modelo, ano, preco, descricao, quilometragem, categoria, cor, combustivel, cambio, imagem_url, id_usuario});
+    
     res.status(201).json({ message: "Veículo cadastrado com sucesso!", veiculo });
   } catch (err) {
     console.error("Erro ao cadastrar veículo:", err);

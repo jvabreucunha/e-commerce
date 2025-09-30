@@ -81,6 +81,10 @@ const buscarPorId = async (req, res) => {
 
     if (!usuario) return res.status(404).json({ message: 'Usuário não encontrado' });
 
+    if (req.usuario.tipo === 'cliente' && req.usuario.id_usuario !== usuario.id_usuario) {
+      return res.status(403).json({ message: 'Você não tem permissão para acessar este usuário' });
+    }
+
     res.status(200).json(usuario);
   } catch (err) {
     console.error('Erro ao buscar usuário:', err);

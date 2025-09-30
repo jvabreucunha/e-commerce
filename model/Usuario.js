@@ -38,7 +38,7 @@ const Usuario = sequelize.define("Usuario",
     endereco: {
       type: DataTypes.STRING,
       allowNull: true,
-    },
+    },    
   },
   {
     tableName: "usuarios",

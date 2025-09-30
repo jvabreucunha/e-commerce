@@ -57,6 +57,14 @@ const Veiculo = sequelize.define("Veiculo",
       allowNull: false,
       defaultValue: "disponivel",
     },
+    id_usuario: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "usuarios",
+        key: "id_usuario",
+      }
+    },
   },
   {
     tableName: "veiculos",
