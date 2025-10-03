@@ -9,7 +9,7 @@ const PORT = process.env.PORT
 const hostname = process.env.HOST
 
 const conn = require('./db/conn')
-const router = require('./router')
+const router = require('./routes/router')
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, 
@@ -21,7 +21,7 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 app.use(helmet());
 app.use(cors())
-app.use(limiter);
+app.use(limiter);   
 app.use(router)
 
 conn.sync()

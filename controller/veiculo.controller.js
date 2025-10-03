@@ -106,7 +106,7 @@ const atualizar = async (req, res) => {
 
     if (!veiculo) return res.status(404).json({ message: "Veículo não encontrado" });
 
-    if (req.usuario.tipo !== 'admin' && req.usuario.id_usuario !== usuario.id_usuario) {
+    if (req.usuario.tipo !== 'admin' && req.usuario.id_usuario !== veiculo.id_usuario) {
       return res.status(403).json({ message: 'Você não tem permissão para atualizar este veículo' });
     }
     
@@ -128,7 +128,7 @@ const deletar = async (req, res) => {
 
     if (!veiculo) return res.status(404).json({ message: "Veículo não encontrado" });
 
-    if (req.usuario.tipo !== 'admin' && req.usuario.id_usuario !== usuario.id_usuario) {
+    if (req.usuario.tipo !== 'admin' && req.usuario.id_usuario !== veiculo.id_usuario) {
       return res.status(403).json({ message: 'Você não tem permissão para deletar este veículo' });
     }
 

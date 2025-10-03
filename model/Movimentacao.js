@@ -7,44 +7,14 @@ const Movimentacao = sequelize.define("Movimentacao", {
     primaryKey: true,
     autoIncrement: true,
   },
-  id_veiculo: {
+  id_proposta: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: { model: "veiculos", key: "id_veiculo" },
+    unique: true, 
+    references: { model: "propostas", key: "id_proposta" },
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   },
-  id_comprador: { 
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: "usuarios", key: "id_usuario" },
-    onDelete: "SET NULL",
-    onUpdate: "CASCADE",
-  },
-  id_vendedor: { 
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    references: { model: "usuarios", key: "id_usuario" },
-    onDelete: "SET NULL",
-    onUpdate: "CASCADE",
-  },
-  data_venda: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
-  valor_final: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: false,
-  },
-  metodo_pagamento: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  status: {
-    type: DataTypes.ENUM("pendente", "aprovada", "cancelada"),
-    allowNull: false,
-    defaultValue: "pendente",
-  }
 }, {
   tableName: "movimentacoes",
   timestamps: false,

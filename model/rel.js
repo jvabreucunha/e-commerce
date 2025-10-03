@@ -1,8 +1,8 @@
 const Usuario = require("./Usuario");
 const Veiculo = require("./Veiculo");
 const Movimentacao = require("./Movimentacao");
+const Proposta = require("./Proposta");
 
-// Usuário ↔ Movimentacao (comprador)
 Usuario.hasMany(Movimentacao, {
   foreignKey: "id_comprador",
   as: "compras",
@@ -14,7 +14,6 @@ Movimentacao.belongsTo(Usuario, {
   as: "comprador"
 });
 
-// Usuário ↔ Movimentacao (vendedor / aprovador)
 Usuario.hasMany(Movimentacao, {
   foreignKey: "id_vendedor",
   as: "vendasAprovadas",
@@ -26,7 +25,6 @@ Movimentacao.belongsTo(Usuario, {
   as: "vendedor"
 });
 
-// Usuário ↔ Veiculo (quem cadastrou o veículo)
 Usuario.hasMany(Veiculo, {
   foreignKey: "id_usuario",
   as: "veiculos",
@@ -38,7 +36,6 @@ Veiculo.belongsTo(Usuario, {
   as: "dono"
 });
 
-// Veiculo ↔ Movimentacao
 Veiculo.hasMany(Movimentacao, {
   foreignKey: "id_veiculo",
   as: "movimentacoes",
@@ -50,4 +47,48 @@ Movimentacao.belongsTo(Veiculo, {
   as: "veiculo"
 });
 
-module.exports = { Usuario, Veiculo, Movimentacao };
+Usuario.hasMany(Proposta, {
+  foreignKey: "id_comprador",
+  as: "propostasFeitas",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE"
+});
+Proposta.belongsTo(Usuario, {
+  foreignKey: "id_comprador",
+  as: "comprador"
+});
+
+Usuario.hasMany(Proposta, {
+  foreignKey: "id_vendedor",
+  as: "propostasAprovadas",
+  onDelete: "SET NULL",
+  onUpdate: "CASCADE"
+});
+Proposta.belongsTo(Usuario, {
+  foreignKey: "id_vendedor",
+  as: "vendedor"
+});
+
+Veiculo.hasMany(Proposta, {
+  foreignKey: "id_veiculo",
+  as: "propostas",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE"
+});
+Proposta.belongsTo(Veiculo, {
+  foreignKey: "id_veiculo",
+  as: "veiculo"
+});
+
+Proposta.hasOne(Movimentacao, {
+  foreignKey: "id_proposta",
+  as: "movimentacao",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE"
+});
+Movimentacao.belongsTo(Proposta, {
+  foreignKey: "id_proposta",
+  as: "proposta"
+});
+
+module.exports = { Usuario, Veiculo, Movimentacao, Proposta };
