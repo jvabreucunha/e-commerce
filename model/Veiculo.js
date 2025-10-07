@@ -15,7 +15,7 @@ const Veiculo = sequelize.define("Veiculo",
     modelo: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
+    }, 
     ano: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -63,7 +63,7 @@ const Veiculo = sequelize.define("Veiculo",
       references: {
         model: "usuarios",
         key: "id_usuario",
-      }
+      } 
     },
   },
   {
@@ -73,3 +73,4 @@ const Veiculo = sequelize.define("Veiculo",
 );
 
 module.exports = Veiculo;
+

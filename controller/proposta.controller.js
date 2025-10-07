@@ -18,7 +18,7 @@ const criarProposta = async (req, res) => {
 
     const proposta = await Proposta.create({
       id_veiculo,
-      id_comprador: req.usuario.id_usuario,
+      id_comprador: req.usuario.id_usuario, 
       id_vendedor: veiculo.id_usuario,
       valor_proposta,
       metodo_pagamento,

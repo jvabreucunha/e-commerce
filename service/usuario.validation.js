@@ -5,8 +5,8 @@ const usuarioSchema = Joi.object({
   email: Joi.string().email().required(),
   senha: Joi.string().min(6).required(),
   tipo: Joi.string().valid('cliente', 'funcionario', 'admin').optional(),
-  cpf: Joi.string().pattern(/^\d{11}$/).required(), // CPF apenas números
-  telefone: Joi.string().pattern(/^\d{10,11}$/).required(), // 10 ou 11 dígitos
+  cpf: Joi.string().pattern(/^\d{11}$/).required(), 
+  telefone: Joi.string().pattern(/^\d{10,11}$/).required(), 
   endereco: Joi.string().optional()
 });
 
