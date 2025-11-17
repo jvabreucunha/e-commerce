@@ -53,28 +53,29 @@ const buscarPorModelo = async (req, res) => {
       if (!modelo) {
         return res.status(400).json({ message: "O parâmetro 'modelo' é obrigatório." });
       }
-  
-      const cacheKey = `veiculo:modelo:${modelo.toLowerCase()}`;
-      const cacheData = await redis.get(cacheKey)
+      
+      const modeloLower = modelo.toLowerCase();
+      const cacheKey = `veiculo:modelo:${modeloLower}`;
 
+      const cacheData = await redis.get(cacheKey)
       if (cacheData) {
-        await redis.zIncrBy("veiculos:ranking", 1, modelo.toLowerCase());
+        await redis.zIncrBy("veiculos:ranking", 1, modeloLower);
         return res.status(200).json(JSON.parse(cacheData));
       }
 
       const veiculo = await Veiculo.findAll({
         where: Sequelize.where(
-          Sequelize.col("modelo"),
-          { [Op.like]: modelo } 
-        ),
+          Sequelize.fn("LOWER", Sequelize.col("modelo")),
+          { [Op.like]: `%${modeloLower}%` }
+        )
       });
   
       if (veiculo.length === 0) {
-        return res.status(404).json({ message: "Nenhum veículo encontrado com esse modelo (case sensitive)." });
+        return res.status(404).json({ message: "Nenhum veículo encontrado" });
       }
   
       await redis.setEx(cacheKey, 300, JSON.stringify(veiculo))
-      await redis.zIncrBy("veiculos:ranking", 1, modelo.toLowerCase());
+      await redis.zIncrBy("veiculos:ranking", 1, modeloLower);
 
       res.status(200).json(veiculo);
     } catch (err) {

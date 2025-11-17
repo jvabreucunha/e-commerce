@@ -10,7 +10,7 @@ const Veiculo = sequelize.define("Veiculo",
     },
     marca: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false,   
     },
     modelo: {
       type: DataTypes.STRING,
@@ -33,7 +33,23 @@ const Veiculo = sequelize.define("Veiculo",
       allowNull: false,
     },
     categoria: {
-      type: DataTypes.ENUM("sedan", "SUV", "hatch", "picape", "outro"),
+      type: DataTypes.ENUM(
+        "sedan",
+        "SUV",
+        "hatch",
+        "picape",
+        "cupê",
+        "conversível",
+        "perua",
+        "minivan",
+        "van",
+        "esportivo",
+        "luxo",
+        "offroad",
+        "utilitário",
+        "microcar",
+        "outro"
+      ),
       allowNull: false,
     },
     cor: {
@@ -41,7 +57,7 @@ const Veiculo = sequelize.define("Veiculo",
       allowNull: false,
     },
     combustivel: {
-      type: DataTypes.ENUM("gasolina", "flex", "etanol", "diesel", "eletrico"),
+      type: DataTypes.ENUM("gasolina", "flex", "etanol", "GNV", "diesel", "eletrico"),
       allowNull: false,
     },
     cambio: {
