@@ -15,7 +15,7 @@ const cadastrar = async (req, res) => {
           const dadosToken = verificarToken(token);
       
           if (dadosToken && dadosToken.tipo === 'admin' && tipo) {
-            const tiposValidos = ['cliente','funcionario','admin'];
+            const tiposValidos = ['cliente','admin'];
             if (!tiposValidos.includes(tipo)) {
               return res.status(400).json({ message: 'Tipo inválido' });
             }
@@ -51,7 +51,6 @@ const cadastrar = async (req, res) => {
         }});
     } catch (err) {
       if (err instanceof Sequelize.UniqueConstraintError) {
-        // Pega o campo que violou a constraint
         const campo = err.errors[0].path;
         return res.status(400).json({ message: `${campo} já está em uso. Por favor, escolha outro.` });
       }
@@ -109,7 +108,7 @@ const atualizar = async (req, res) => {
       usuario.update({nome, email, cpf, telefone, endereco})
   
       if (tipo && req.usuario.tipo === 'admin') {
-        const tiposValidos = ['cliente', 'funcionario', 'admin'];
+        const tiposValidos = ['cliente', 'admin'];
         if (!tiposValidos.includes(tipo)) {
           return res.status(400).json({ message: 'Tipo inválido' });
         }

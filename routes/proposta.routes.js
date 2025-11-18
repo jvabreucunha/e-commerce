@@ -11,7 +11,7 @@ const {
 const authMiddleware = require("../middleware/auth.middleware");
 
 router.post("/", authMiddleware(["cliente"]), validarCriarProposta, propostaController.criarProposta);
-router.patch("/:id/responder", authMiddleware(["cliente", "funcionario", "admin"]), validarResponderProposta, propostaController.responderProposta);
+router.patch("/:id/responder", authMiddleware(["cliente", "admin"]), validarResponderProposta, propostaController.responderProposta);
 router.delete("/:id/cancelar", authMiddleware(["cliente"]), validarCancelarProposta, propostaController.cancelarProposta);
 
 module.exports = router;
