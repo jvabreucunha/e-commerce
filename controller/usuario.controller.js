@@ -1,17 +1,18 @@
 const { Sequelize } = require("sequelize");
 const Usuario = require('../model/Usuario');
 const { hashSenha } = require('../service/bcrypt.service');
+const { verificarToken } = require('../service/jwt.service');
 
 const cadastrar = async (req, res) => {
     try {
       const { nome, email, senha, tipo, cpf, telefone, endereco } = req.body;
   
       let tipoFinal = 'cliente'; 
-  
+      
       if (req.headers['authorization']) {
         try {
           const authHeader = req.headers['authorization'];
-          const token = authHeader.split(' ')[1];
+          const token = authHeader
           const dadosToken = verificarToken(token);
       
           if (dadosToken && dadosToken.tipo === 'admin' && tipo) {
@@ -116,7 +117,17 @@ const atualizar = async (req, res) => {
       }
   
       await usuario.save();
-      res.status(200).json({ message: 'Usuário atualizado com sucesso', usuario });
+      res.status(200).json({ 
+        message: 'Usuário atualizado com sucesso',         
+        usuario: {
+          id_usuario: usuario.id_usuario,
+          nome: usuario.nome,
+          email: usuario.email,
+          tipo: usuario.tipo,
+          cpf: usuario.cpf,
+          telefone: usuario.telefone,
+          endereco: usuario.endereco
+        }});
     } catch (err) {
       console.error('Erro ao atualizar usuário:', err);
       res.status(500).json({ message: 'Erro ao atualizar usuário' });

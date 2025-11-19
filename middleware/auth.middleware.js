@@ -5,7 +5,7 @@ function authMiddleware(permissoes = []) {
     const authHeader = req.headers['authorization'];
     if (!authHeader) return res.status(401).json({ error: 'Token não fornecido!' });
 
-    const token = authHeader.split(' ')[1];
+    const token = authHeader;
     const dadosToken = verificarToken(token);
     if (!dadosToken) return res.status(403).json({ error: 'Token inválido!' });
 
