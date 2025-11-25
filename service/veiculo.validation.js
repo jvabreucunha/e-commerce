@@ -10,7 +10,6 @@ const veiculoSchema = Joi.object({
   cor: Joi.string().required(),
   combustivel: Joi.string().valid('gasolina','flex','etanol','diesel','eletrico').required(),
   cambio: Joi.string().valid('manual','automatico').required(),
-  imagem_url: Joi.string().uri().required() // garante que seja uma URL válida
 });
 
 const validarVeiculo = (req, res, next) => {
@@ -18,18 +17,7 @@ const validarVeiculo = (req, res, next) => {
   if (error) return res.status(400).json({ message: error.details[0].message });
   next();
 };
-
-const modeloQuerySchema = Joi.object({
-    modelo: Joi.string().min(1).required()
-  });
-  
-  const validarModeloQuery = (req, res, next) => {
-    const { error } = modeloQuerySchema.validate(req.query);
-    if (error) return res.status(400).json({ message: error.details[0].message });
-    next();
-  };
   
 module.exports = {
     validarVeiculo,
-    validarModeloQuery
 }

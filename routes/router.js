@@ -8,9 +8,10 @@ const propostaRoutes = require("./proposta.routes");
 const favoritoRoutes = require("./favorito.routes");
 
 router.use("/auth", authController.login);
-router.use("/usuarios", usuarioRoutes);
-router.use("/veiculos", veiculoRoutes);
-router.use("/propostas", propostaRoutes);
-router.use("/favoritos", favoritoRoutes);
+router.use("/auth/verify", authController.verify);
+router.use("/usuario", usuarioRoutes);
+router.use("/veiculo", veiculoRoutes);
+router.use("/proposta", propostaRoutes);
+router.use("/favorito", favoritoRoutes);
 
 module.exports = router;

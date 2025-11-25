@@ -9,6 +9,8 @@ const PORT = process.env.PORT
 const hostname = process.env.HOST
 
 const conn = require('./db/conn')
+require('./model/rel')
+
 const router = require('./routes/router')
 
 const limiter = rateLimit({

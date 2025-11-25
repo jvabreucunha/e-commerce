@@ -64,10 +64,6 @@ const Veiculo = sequelize.define("Veiculo",
       type: DataTypes.ENUM("manual", "automatico"),
       allowNull: false,
     },
-    imagem_url: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     status: {
       type: DataTypes.ENUM("disponivel", "vendido"),
       allowNull: false,
