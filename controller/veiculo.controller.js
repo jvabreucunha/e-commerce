@@ -1,12 +1,12 @@
 const sharp = require("sharp");
+const fs = require("fs/promises");
+const path = require("path");
 const { Op, Sequelize } = require("sequelize");
 const redis = require("../service/redis.service");
-const Veiculo = require("../model/Veiculo");
-const ImagemVeiculo = require("../model/ImagemVeiculo");
+const { Veiculo, ImagemVeiculo } = require("../model/rel");
 
 const cadastrar = async (req, res) => {
   try {
-
     const {
       marca,
       modelo,
@@ -39,17 +39,28 @@ const cadastrar = async (req, res) => {
     if (req.files && req.files.length > 0) {
       req.files.forEach(async (file, index) => {
         const caminhoOriginal = `uploads/veiculos/${file.filename}`;
-        const caminhoFinal = `uploads/veiculos/optimized-${file.filename}`;
+        const ext = path.extname(file.filename);
+        const base = path.basename(file.filename, ext);
 
-        await sharp(caminhoOriginal).resize(1200).toFile(caminhoFinal)
+        const caminhoFinal = `uploads/veiculos/optimized-${base}${ext}`;
+
+        await sharp(caminhoOriginal).resize(1200).toFile(caminhoFinal);
         await ImagemVeiculo.create({
           id_veiculo: veiculo.id_veiculo,
           caminho: caminhoFinal,
-          ordem: index + 1
-        })
+          ordem: index + 1,
+        });
+
+        try {
+          await fs.unlink(caminhoOriginal);
+        } catch (err) {
+          if (err.code !== "ENOENT") {
+            console.error("Erro ao apagar imagem original:", err);
+          }
+        }
       });
     }
-    res.status(201).json({ message: "Veículo cadastrado com sucesso!"});
+    res.status(201).json({ message: "Veículo cadastrado com sucesso!" });
   } catch (err) {
     console.error("Erro ao cadastrar veículo:", err);
     res.status(500).json({ message: "Erro ao cadastrar veículo" });
@@ -61,8 +72,8 @@ const listarTodos = async (req, res) => {
     const veiculos = await Veiculo.findAll({
       include: {
         model: ImagemVeiculo,
-        as: "imagens"
-      }
+        as: "imagens",
+      },
     });
     res.status(200).json(veiculos);
   } catch (err) {
@@ -77,8 +88,8 @@ const buscarPorId = async (req, res) => {
     const veiculo = await Veiculo.findByPk(id, {
       include: {
         model: ImagemVeiculo,
-        as: "imagens"
-      }
+        as: "imagens",
+      },
     });
 
     if (!veiculo)
@@ -112,18 +123,18 @@ const buscarPorModelo = async (req, res) => {
     const veiculo = await Veiculo.findAll({
       include: {
         model: ImagemVeiculo,
-        as: "imagens"
+        as: "imagens",
       },
       where: Sequelize.where(Sequelize.fn("LOWER", Sequelize.col("modelo")), {
         [Op.like]: `%${modeloLower}%`,
-      })
+      }),
     });
 
     if (veiculo.length === 0) {
       return res.status(404).json({ message: "Nenhum veículo encontrado" });
     }
 
-    const veiculoPlano = veiculo.map(v => v.toJSON());
+    const veiculoPlano = veiculo.map((v) => v.toJSON());
     await redis.setEx(cacheKey, 300, JSON.stringify(veiculoPlano));
     await redis.zIncrBy("veiculos:ranking", 1, modeloLower);
 
@@ -176,11 +187,9 @@ const atualizar = async (req, res) => {
       req.usuario.tipo !== "admin" &&
       req.usuario.id_usuario !== veiculo.id_usuario
     ) {
-      return res
-        .status(403)
-        .json({
-          message: "Você não tem permissão para atualizar este veículo",
-        });
+      return res.status(403).json({
+        message: "Você não tem permissão para atualizar este veículo",
+      });
     }
 
     await veiculo.update({

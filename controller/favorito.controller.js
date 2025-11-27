@@ -1,6 +1,5 @@
 const { registrarLog } = require("../service/log.service");
-const Favorito = require("../model/Favorito");
-const Veiculo = require("../model/Veiculo");
+const { Veiculo, Favorito } = require("../model/rel");
 
 const alternarFavorito = async (req, res) => {
     try {

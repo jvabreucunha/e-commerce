@@ -1,5 +1,5 @@
 //auth.controller.js
-const Usuario = require("../model/Usuario");
+const { Usuario } = require("../model/rel");
 const { compareSenha } = require("../service/bcrypt.service");
 const { gerarToken, verificarToken } = require("../service/jwt.service");
 

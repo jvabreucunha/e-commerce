@@ -12,5 +12,6 @@ router.get("/buscar", authMiddleware(["cliente", "admin"]), veiculoController.bu
 router.get("/mais-buscados", authMiddleware(["cliente", "admin"]), veiculoController.buscarMaisBuscados);
 router.get("/:id", authMiddleware(["cliente", "admin"]), veiculoController.buscarPorId);
 router.put("/:id", authMiddleware(["cliente", "admin"]), validarVeiculo, veiculoController.atualizar);
+router.delete("/:id", authMiddleware(["cliente", "admin"]), validarVeiculo, veiculoController.deletar);
 
 module.exports = router;

@@ -1,17 +1,22 @@
 require("dotenv").config();
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
-function gerarToken(payload){
-    return jwt.sign(payload, process.env.SECRET, { expiresIn: '3h'})
+function gerarToken(payload) {
+  return jwt.sign(payload, process.env.SECRET, { expiresIn: "3h" });
 }
 
-function verificarToken(token){
-    try{
-        return jwt.verify(token, process.env.SECRET)
-    }catch(err){
-        console.error('Erro ao verificar o token')
-        return null
+function verificarToken(token) {
+  try {
+    if (!token) {
+      console.error("Token não fornecido!");
+      return null;
     }
+
+    return jwt.verify(token, process.env.SECRET);
+  } catch (err) {
+    console.error("Erro ao verificar o token");
+    return null;
+  }
 }
 
-module.exports = { gerarToken, verificarToken }
+module.exports = { gerarToken, verificarToken };

@@ -1,6 +1,4 @@
-const Veiculo = require('../model/Veiculo');
-const Proposta = require('../model/Proposta');
-const Movimentacao = require('../model/Movimentacao');
+const { Veiculo, Proposta, Movimentacao} = require("../model/rel");
 
 const criarProposta = async (req, res) => {
   try {

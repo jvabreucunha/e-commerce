@@ -1,5 +1,5 @@
 const { Sequelize } = require("sequelize");
-const Usuario = require('../model/Usuario');
+const { Usuario } = require("../model/rel");
 const { hashSenha } = require('../service/bcrypt.service');
 const { verificarToken } = require('../service/jwt.service');
 
@@ -52,7 +52,7 @@ const cadastrar = async (req, res) => {
         }});
     } catch (err) {
       if (err instanceof Sequelize.UniqueConstraintError) {
-        const campo = err.errors[0].path;
+        const campo = err.errors[0]?.path || "informações";
         return res.status(400).json({ message: `${campo} já está em uso. Por favor, escolha outro.` });
       }
 

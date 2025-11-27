@@ -1,15 +1,16 @@
 require("dotenv").config();
 const express = require('express')
-const app = express()
 const cors = require('cors')
+const path = require("path");
+const helmet = require('helmet'); 
 const rateLimit = require('express-rate-limit');
-const helmet = require('helmet');
+
+const app = express()
 
 const PORT = process.env.PORT
 const hostname = process.env.HOST
 
 const conn = require('./db/conn')
-require('./model/rel')
 
 const router = require('./routes/router')
 
@@ -21,10 +22,11 @@ const limiter = rateLimit({
 
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
-app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(cors())
 app.use(limiter);   
 app.use(router)
+app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 
 conn.sync()
 .then(()=>{
