@@ -2,8 +2,14 @@ import { createContext, useContext, useState } from "react";
 
 const ToastContext = createContext();
 
-function useToastInternal() {
-  return useContext(ToastContext);
+/* eslint-disable react-refresh/only-export-components */
+
+export function useToast() {
+  const context = useContext(ToastContext);
+  if (!context) {
+    throw new Error("useToast must be used within a ToastProvider");
+  }
+  return context;
 }
 
 export function ToastProvider({ children }) {
@@ -27,10 +33,10 @@ export function ToastProvider({ children }) {
           style={{
             background:
               toast.type === "success"
-                ? "rgb(34 197 94)" // verde
+                ? "rgb(34 197 94)" 
                 : toast.type === "error"
-                ? "rgb(239 68 68)" // vermelho
-                : "rgb(168 85 247)" // roxo
+                ? "rgb(239 68 68)" 
+                : "rgb(168 85 247)" 
           }}
         >
           {toast.message}
@@ -39,5 +45,3 @@ export function ToastProvider({ children }) {
     </ToastContext.Provider>
   );
 }
-
-ToastProvider.useToast = useToastInternal;

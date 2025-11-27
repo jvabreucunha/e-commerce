@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import VehicleCard from "../components/VehicleCard";
+import VehicleCard from "./VehicleCard";
+import VehicleAddButton from "./VehicleAddButton";
 
-export default function AllVehicles() {
+export default function UserVehicleList() {
   const [vehicles, setVehicles] = useState([]);
   
   useEffect(() => {
-    async function getAllVehicles() {
+    async function getMyVehicles() {
       const token = localStorage.getItem("token");
 
       try {
-        const res = await fetch("http://localhost:3000/veiculo", {
+        const res = await fetch("http://localhost:3000/veiculo/meus-veiculos", {
           headers: {
             authorization: `${token}`,
           },
@@ -24,15 +25,16 @@ export default function AllVehicles() {
       }
     }
 
-    getAllVehicles();
+    getMyVehicles();
   }, []);
 
   return (
     <div className="w-full flex flex-col items-center p-6">
-      <div className="w-full flex flex-col items-start p-7">
+      <div className="w-full flex items-start p-7 justify-between">
         <h3 className="text-2xl font-semibold text-neutral-100 mb-4 tracking-wide">
-          Explore nossa coleção completa de veículos
+          Meus Anúncios
         </h3>
+        <VehicleAddButton />
       </div>
 
       <div className="w-12/12 max-w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 px-8">
