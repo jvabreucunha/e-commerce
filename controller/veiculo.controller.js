@@ -36,6 +36,15 @@ const cadastrar = async (req, res) => {
       id_usuario,
     });
 
+    if (!req.files.length > 0) {
+      res
+        .status(400)
+        .json({
+          success: false,
+          message: "É necessario anexar pelo menos uma imagem!",
+        });
+    }
+
     if (req.files && req.files.length > 0) {
       req.files.forEach(async (file, index) => {
         const caminhoOriginal = `uploads/veiculos/${file.filename}`;
@@ -60,10 +69,14 @@ const cadastrar = async (req, res) => {
         }
       });
     }
-    res.status(201).json({ message: "Veículo cadastrado com sucesso!" });
+    res
+      .status(201)
+      .json({ success: true, message: "Veículo cadastrado com sucesso!" });
   } catch (err) {
     console.error("Erro ao cadastrar veículo:", err);
-    res.status(500).json({ message: "Erro ao cadastrar veículo" });
+    res
+      .status(500)
+      .json({ success: false, message: "Erro ao cadastrar veículo" });
   }
 };
 
@@ -78,6 +91,26 @@ const listarTodos = async (req, res) => {
     res.status(200).json(veiculos);
   } catch (err) {
     console.error("Erro ao listar veículos:", err);
+    res.status(500).json({ message: "Erro ao listar veículos" });
+  }
+};
+
+const listarPorUsuario = async (req, res) => {
+  const id_usuario = req.usuario.id_usuario;
+
+  try {
+    const veiculos = await Veiculo.findAll({
+      include: {
+        model: ImagemVeiculo,
+        as: "imagens",
+      },
+      where: {
+        id_usuario: id_usuario,
+      }
+    });
+    res.status(200).json(veiculos);
+  } catch (err) {
+    console.error("Erro ao listar meus veículos:", err);
     res.status(500).json({ message: "Erro ao listar veículos" });
   }
 };
@@ -172,6 +205,7 @@ const atualizar = async (req, res) => {
       ano,
       preco,
       quilometragem,
+      descricao,
       categoria,
       cor,
       combustivel,
@@ -249,6 +283,7 @@ const deletar = async (req, res) => {
 module.exports = {
   cadastrar,
   listarTodos,
+  listarPorUsuario,
   buscarPorId,
   buscarPorModelo,
   buscarMaisBuscados,

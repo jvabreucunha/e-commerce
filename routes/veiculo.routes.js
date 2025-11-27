@@ -8,6 +8,7 @@ const upload = require('../service/multer.service')
 
 router.post("/", authMiddleware(["cliente", "admin"]), validarVeiculo, upload.array("imagens", 5), veiculoController.cadastrar);
 router.get("/", authMiddleware(["cliente", "admin"]), veiculoController.listarTodos);
+router.get("/meus-veiculos", authMiddleware(["cliente", "admin"]), veiculoController.listarPorUsuario);
 router.get("/buscar", authMiddleware(["cliente", "admin"]), veiculoController.buscarPorModelo);
 router.get("/mais-buscados", authMiddleware(["cliente", "admin"]), veiculoController.buscarMaisBuscados);
 router.get("/:id", authMiddleware(["cliente", "admin"]), veiculoController.buscarPorId);
