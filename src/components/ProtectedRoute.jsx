@@ -15,9 +15,9 @@ export default function ProtectedRoute({ children }) {
       }
 
       try {
-        const res = await fetch("https://sua-api.com/auth/validate", {
+        const res = await fetch("http://localhost:3000/auth/verify", {
           headers: {
-            Authorization: `Bearer ${token}`,
+            authorization: `${token}`,
           },
         });
 

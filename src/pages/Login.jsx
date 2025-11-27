@@ -13,7 +13,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost:3000/login", {
+            const response = await fetch("http://localhost:3000/auth", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, senha }),
@@ -26,10 +26,11 @@ export default function Login() {
                 return;
             }
 
+
             localStorage.setItem("token", data.token);
             window.location.href = "/";
         } catch (err) {
-            alert("Erro ao conectar com o servidor");
+            alert("Erro ao conectar com o servidor", err);
         } finally {
             setLoading(false);
         }

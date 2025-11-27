@@ -17,7 +17,7 @@ export default function SignUp() {
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost:3000/register", {
+            const response = await fetch("http://localhost:3000/usuario", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ nome, email, senha, cpf, telefone, endereco }),
@@ -33,7 +33,7 @@ export default function SignUp() {
             alert("Conta criada com sucesso!");
             window.location.href = "/login";
         } catch (err) {
-            alert("Erro ao conectar com o servidor");
+            alert("Erro ao conectar com o servidor", err);
         } finally {
             setLoading(false);
         }
@@ -48,7 +48,6 @@ export default function SignUp() {
 
                 <form className="space-y-6" onSubmit={handleSubmit}>
 
-                    {/* Nome */}
                     <div className="space-y-1">
                         <label className="text-sm text-neutral-300">Nome</label>
                         <div className="relative">
@@ -64,7 +63,6 @@ export default function SignUp() {
                         </div>
                     </div>
 
-                    {/* Email */}
                     <div className="space-y-1">
                         <label className="text-sm text-neutral-300">Email</label>
                         <div className="relative">
@@ -80,7 +78,6 @@ export default function SignUp() {
                         </div>
                     </div>
 
-                    {/* Senha */}
                     <div className="space-y-1">
                         <label className="text-sm text-neutral-300">Senha</label>
                         <div className="relative">
@@ -105,7 +102,6 @@ export default function SignUp() {
                         </div>
                     </div>
 
-                    {/* CPF */}
                     <div className="space-y-1">
                         <label className="text-sm text-neutral-300">CPF</label>
                         <div className="relative">
@@ -121,7 +117,6 @@ export default function SignUp() {
                         </div>
                     </div>
 
-                    {/* Telefone */}
                     <div className="space-y-1">
                         <label className="text-sm text-neutral-300">Telefone</label>
                         <div className="relative">
@@ -137,7 +132,6 @@ export default function SignUp() {
                         </div>
                     </div>
 
-                    {/* Endereço */}
                     <div className="space-y-1">
                         <label className="text-sm text-neutral-300">Endereço</label>
                         <div className="relative">
