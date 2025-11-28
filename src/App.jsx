@@ -5,7 +5,7 @@ import SignUp from "./pages/SignUp.jsx";
 import UserVehicles from "./pages/UserVehicles.jsx";
 import AddVehicle from "./pages/AddVehicle.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-import { ToastProvider } from "./components/ToastContex.jsx";
+import { ToastProvider } from "./components/ToastContext.jsx";
 
 export default function App() {
   return (
